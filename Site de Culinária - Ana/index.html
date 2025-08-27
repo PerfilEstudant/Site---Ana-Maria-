@@ -1,137 +1,383 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <title>Tropicália</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cozinha com Paixão – Meu Universo Culinário</title>
+  <meta name="description" content="Site de culinária com introdução à profissão e à paixão pela cozinha, cards de jogos atuais e botão principal acessível. Cores no estilo Google." />
+
+  <!-- Fonte Google para um visual limpo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* =====================
+       Variáveis (cores Google)
+       ===================== */
+    :root {
+      --google-blue: #4285F4;
+      --google-red: #DB4437;
+      --google-yellow: #F4B400;
+      --google-green: #34A853; /* variante moderna e acessível */
+      --bg: #ffffff;
+      --text: #202124; /* tom escuro usado pelo Google */
+      --muted: #5f6368; /* cinza Google */
+      --card: #ffffff;
+      --surface: #f1f3f4; /* cinza claro Google */
+      --focus: #111827; /* alto contraste para focus ring */
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1117;
+        --text: #e6edf3;
+        --muted: #9aa0a6;
+        --card: #161b22;
+        --surface: #0f141a;
+        --focus: #ffffff;
+      }
+    }
+
+    /* Reset e bases acessíveis */
+    *, *::before, *::after { box-sizing: border-box; }
+    html:focus-within { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: var(--google-blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Link de pular para o conteúdo */
+    .skip-link {
+      position: absolute;
+      left: -10000px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+    .skip-link:focus {
+      left: 1rem;
+      top: 1rem;
+      width: auto;
+      height: auto;
+      padding: .6rem 1rem;
+      background: var(--google-yellow);
+      color: #111;
+      border-radius: .5rem;
+      z-index: 1000;
+    }
+
+    /* Cabeçalho */
+    header {
+      background: linear-gradient(90deg, var(--google-blue), var(--google-green));
+      color: #fff;
+      padding: 1rem 1.25rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .nav {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+    .brand .dot { width: .75rem; height: .75rem; border-radius: 999px; display: inline-block; }
+    .dot.blue { background: var(--google-blue); }
+    .dot.red { background: var(--google-red); }
+    .dot.yellow { background: var(--google-yellow); }
+    .dot.green { background: var(--google-green); }
+
+    nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 1rem; }
+    nav a { color: #fff; font-weight: 600; }
+    nav a:focus-visible { outline: 3px solid #fff; outline-offset: 2px; border-radius: .4rem; }
+
+    /* Hero */
+    .hero {
+      max-width: 1100px;
+      margin: 2rem auto 1rem;
+      padding: clamp(1rem, 3vw, 2rem);
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+    @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } }
+
+    .hero-card {
+      background: var(--card);
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 1.25rem;
+      padding: clamp(1rem, 2vw, 1.5rem);
+      box-shadow: 0 6px 24px rgba(0,0,0,.06);
+    }
+
+    .kicker { color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; font-size: .8rem; }
+    h1 { font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.15; margin: .4rem 0 1rem; }
+    .lead { font-size: clamp(1rem, 2.2vw, 1.125rem); color: var(--muted); }
+
+    /* Botão principal acessível */
+    .cta {
+      --shadow: 0 8px 20px rgba(66,133,244,.35);
+      display: inline-grid;
+      place-items: center;
+      gap: .5rem;
+      margin-top: 1.25rem;
+      padding: .9rem 1.2rem;
+      border: 0;
+      border-radius: .9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--google-blue), var(--google-red));
+      color: #fff;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .cta:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(66,133,244,.45); }
+    .cta:active { transform: translateY(0); }
+    .cta:focus-visible {
+      outline: 4px solid #fff;
+      outline-offset: 2px;
+    }
+    .cta small { display: block; font-weight: 600; opacity: .9; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cta, .hero, .card { transition: none !important; }
+    }
+
+    /* Seção Introdução: profissão e paixão */
+    .section {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 clamp(1rem, 3vw, 2rem);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .info {
+      background: var(--surface);
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 1rem;
+      padding: 1rem 1.25rem;
+    }
+
+    /* Cards de jogos em contêiner */
+    .games {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 1rem;
+      padding: 1rem;
+      display: grid;
+      gap: .5rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,.05);
+    }
+    .badge {
+      display: inline-block;
+      font-size: .75rem;
+      font-weight: 700;
+      padding: .25rem .5rem;
+      border-radius: 999px;
+      color: #111;
+      background: linear-gradient(90deg, var(--google-yellow), #ffe680);
+    }
+    .tag {
+      display: inline-block;
+      font-size: .75rem;
+      color: #111;
+      background: #e8f0fe; /* azul claro Google */
+      padding: .25rem .5rem;
+      border-radius: .5rem;
+      margin-right: .35rem;
+    }
+
+    /* Rodapé */
+    footer {
+      margin-top: 3rem;
+      background: linear-gradient(90deg, var(--google-green), var(--google-red));
+      color: #fff;
+      padding: 1.5rem;
+    }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+  </style>
 </head>
-
 <body>
-    <header class=" p-5">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
-        <nav class="container d-flex justify-content-between align-items-center" >
-            <img src="img/logo.png" class="nav-img " loading="lazy">
-            <ul class="nav mt-5">
-                <li class="nav-item"><a class="nav-link" href="#inicio">Início</a></li>
-                <li class="nav-item"><a class="nav-link" href="#galeria">Galeria</a></li>
-                <li class="nav-item"><a class="nav-link" href="#contato">Contato</a></li>
-            </ul>
-            <div id="acessibilidade" class="menu-acessibilidade"> 
-                <button id="botao-acessibilidade" class="btn btn-primary fw-bold rotacao-botao" aria-expanded="false">acessibilidade</button>
-                <div id="opcoes-acessibilidade" class="opcoes-acessibilidade apresenta-lista">
-                    <button id="aumentar-fonte" class="btn btn-primary fw-bold" aria-label="Aumentar o tamanho da fonte">A+</button>
-                    <button id="diminuir-fonte" class="btn btn-primary fw-bold" aria-label="diminuir o tamanho da fonte">A-</button>
-                    <button id="alterna-contraste" class="btn btn-primary fw-bold" aria-label="Alterna o contraste de cores"> <i class="bi bi-shadows"></i></button>         
-                </div>
-            </div>
-        </nav>
-       
-    </header>
+  <header role="banner">
+    <div class="nav" aria-label="Topo do site">
+      <div class="brand" aria-label="Marca Cozinha com Paixão">
+        <span class="dot blue" aria-hidden="true"></span>
+        <span class="dot red" aria-hidden="true"></span>
+        <span class="dot yellow" aria-hidden="true"></span>
+        <span class="dot green" aria-hidden="true"></span>
+        <span>Cozinha com Paixão</span>
+      </div>
+      <nav aria-label="Navegação principal">
+        <ul>
+          <li><a href="#intro">Introdução</a></li>
+          <li><a href="#profissao">Profissão</a></li>
+          <li><a href="#jogos">Jogos</a></li>
+          <li><a href="#contato">Contato</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
+  <main id="conteudo" tabindex="-1">
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="titulo-site">
+      <div class="hero-card">
+        <p class="kicker">Culinária • Criatividade • Afeto</p>
+        <h1 id="titulo-site">A cozinha é onde transformo técnica em afeto</h1>
+        <p class="lead">Sou profissional da culinária e vivo esse universo com brilho nos olhos. Estudo, testo, crio e sirvo memórias em forma de prato. Cada receita é um encontro entre ciência, arte e amor: medir, misturar, provar e, acima de tudo, sentir.</p>
+        <button id="btn-cta" class="cta" aria-describedby="cta-desc" aria-label="Explorar receitas com acessibilidade" data-skip-to="#intro">
+          Explorar receitas
+          <small>Atalho: tecla Enter ou Espaço</small>
+        </button>
+        <p id="cta-desc" class="sr-only" aria-hidden="true" style="position:absolute;left:-9999px;">Botão com alto contraste, foco visível e acionável via teclado.</p>
+      </div>
+      <figure class="hero-card" role="img" aria-label="Mesa com ingredientes coloridos representando as cores Google">
+        <svg viewBox="0 0 600 400" width="100%" height="100%" aria-hidden="true">
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="var(--google-blue)"/>
+              <stop offset="100%" stop-color="var(--google-green)"/>
+            </linearGradient>
+          </defs>
+          <rect width="600" height="400" fill="url(#g1)" opacity=".12"/>
+          <circle cx="120" cy="160" r="70" fill="var(--google-blue)"/>
+          <circle cx="240" cy="240" r="60" fill="var(--google-red)"/>
+          <circle cx="360" cy="160" r="50" fill="var(--google-yellow)"/>
+          <circle cx="480" cy="230" r="65" fill="var(--google-green)"/>
+        </svg>
+      </figure>
+    </section>
 
-    <main class="container my-5">
+    <!-- INTRO E PROFISSÃO -->
+    <section id="intro" class="section" aria-labelledby="intro-title">
+      <div class="grid-2">
+        <article class="info" id="profissao" aria-labelledby="profissao-title">
+          <h2 id="profissao-title">Sobre a profissão</h2>
+          <p>Ser profissional de culinária vai muito além de seguir receitas. É dominar técnicas, entender ingredientes, respeitar a segurança alimentar e trabalhar com precisão de laboratório. Da mise en place ao empratamento, cada etapa revela cuidado, estudo e responsabilidade com quem vai degustar.</p>
+          <p>Na cozinha, a rotina é dinâmica: criação de cardápios, testes, controle de qualidade, gestão de equipe e compreensão de custos. A profissão exige disciplina, curiosidade e a humildade de aprender todos os dias.</p>
+        </article>
 
-        <section id="inicio" class="my-5">
-            <div class="inicio-fundo d-flex justify-content-between align-items-center">
-                <div class="esquerda-conteudo">
-                    <h1 class="display-4 text-white fst-italic fw-bold">Boas-vindas a</h1>
-                    <img src="img/logo-2.png" class="mb-3" width="563"
-                        height="278" loading="lazy">
-                    <a href="#tropicalia"
-                        class="btn btn-primary btn-lg botao-inicio fw-semibold">Quero
-                        conhecer!</a>
-                </div>
-                <img src="img/lossy-page1-640px-Os_Mutantes.tif (1).png" alt="A imagem apresenta o grupo musical Os mutantes, sao tres pessoas cantando em um microfone" title="Os mutantes - CC0 Domínio Público / Acervo Arquivo Nacional" class="img-fluid img-inicio">
+        <article class="info" aria-labelledby="paixao-title">
+          <h2 id="paixao-title">Minha paixão pela culinária</h2>
+          <p>Esse universo me fascina! A alquimia do fogo, o perfume das ervas, a música do refogado estalando na panela… Cozinhar é a minha linguagem. É como conto histórias, celebro encontros e cuido de quem amo. Minha missão é transformar ingredientes simples em experiências memoráveis.</p>
+          <p>Compartilho aqui receitas testadas, dicas práticas e processos que respeitam o sabor e o tempo de cada preparo.</p>
+        </article>
+      </div>
+    </section>
 
-              </div>
-        </section>
+    <!-- JOGOS EM CONTÊINERES -->
+    <section id="jogos" class="section" aria-labelledby="jogos-title">
+      <h2 id="jogos-title">Informações de jogos (exemplos em contêineres)</h2>
+      <p class="muted">Demonstração: cards dinâmicos. Substitua os dados no script para manter os jogos atuais.</p>
+      <div id="games-container" class="games" role="list" aria-label="Lista de jogos"></div>
+    </section>
 
-        <section id="tropicalia" class="my-5 pt-6 secao-tropicalia" tabindex="0" aria-label="Seção explicativa sobre a tropicália">
-            <div class="container d-flex align-items-center ">
-                <div class="col-4 d-flex justify-content-center ">
-                    <img src="img/image (1).png" class="rounded-pill" width="273" height="331" loading="lazy">
-                </div>
-                <div class="col-5">
-                    <h2>O que foi a Tropicália?</h2>
-                    <p class="p-2">A Tropicália, também conhecida como Tropicalismo, foi um movimento cultural
-                        brasileiro que surgiu na década de 1960, tendo seu auge entre 1967 e 1968. Esse movimento
-                        abrangeu várias expressões artísticas, como a música, o cinema, o teatro e as artes plásticas, e
-                        teve como principal característica a mistura de elementos da cultura brasileira tradicional com
-                        influências estrangeiras, especialmente do rock e da música pop. Fonte: Site Toda a matéria</p>
-                </div>
-            </div>
-        </section>
+    <!-- CONTATO / RODAPÉ -->
+    <section id="contato" class="section" aria-labelledby="contato-title">
+      <div class="info">
+        <h2 id="contato-title">Fale comigo</h2>
+        <p>Quer trocar uma ideia sobre culinária, técnicas ou eventos? <a href="mailto:contato@cozinhacompaixao.com" aria-label="Enviar e-mail para contato arroba cozinha com paixão ponto com">contato@cozinhacompaixao.com</a></p>
+      </div>
+    </section>
+  </main>
 
-        <section id="galeria" tabindex="0" aria-label="Seção de galeria de imagens">
-            <h2 class="text-center pt-5">Galeria</h2>
-            <div class="container p-3 mt-3 fundo-galeria ">
+  <footer role="contentinfo">
+    <div class="footer-inner">
+      <p>© <span id="ano"></span> Cozinha com Paixão • Feito com acessibilidade e cores no estilo Google.</p>
+    </div>
+  </footer>
 
-                <div class="row justify-content-md-center">
-                    <div class="col-md-4">
-                        <img src="img/lossy-page1-640px-Jorge_Ben_e_o_Trio_Mocotó_no_Teatro_da_Lagoa,_1971.tif.jpg"
-                            class="img-fluid rounded-5" loading="lazy">
-                    </div>
-                    <div class="col-md-4">
-                        <img src="img/lossy-page1-640px-Os_Mutantes_2.tif.jpg" class="img-fluid rounded-5"
-                            loading="lazy">
-                    </div>
-                </div>
-                <div class="row mt-4  justify-content-md-center">
-                    <div class="col-md-4">
-                        <img src="img/lossy-page1-640px-Gilberto_Gil_nos_anos_1960.tif.jpg" class="img-fluid rounded-5" loading="lazy">
-                    </div>
-                    <div class="col-md-4">
-                        <img src="img/lossy-page1-640px-Caetano_Veloso_no_III_Festival_da_Música_Popular.tif.jpg"
-                            class="img-fluid rounded-5" loading="lazy">
-                    </div>
-                </div>
-             </div>
-        </section>
+  <script>
+    // Utilidade: definir ano atual no rodapé
+    document.getElementById('ano').textContent = new Date().getFullYear();
 
-        <section id="contato">
-            <div class="container p-5 d-flex justify-content-center">
-                <div class="col-md-8 col-lg-10 rounded-5 formulario"> <!-- Caixa do formulário com 60% de largura -->
-                    <h2 class="mb-3">Entre em contato</h2>
-                    <form>
-                        <div class="form-group mb-3">
-                            <label for="nome">Nome</label>
-                            <input type="text" id="nome" name="nome" class="form-control rounded-3 mt-1"
-                                placeholder="Digite seu nome completo">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" class="form-control rounded-3 mt-1"
-                                placeholder="Digite seu email">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="mensagem">Mensagem</label>
-                            <textarea id="mensagem" name="mensagem" class="form-control rounded-4 mt-2" rows="4"
-                                placeholder="Escreva sua mensagem"></textarea>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg rounded-pill">Enviar
-                                mensagem</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </section>
-    </main>
-    <footer class="text-center p-3 fst-italic">
-        <p>Acesse nossas redes:</p>
-        <i class="bi bi-whatsapp"></i>
-        <i class="bi bi-instagram"></i>
-        <i class="bi bi-tiktok"></i>
-        <p class="mt-3">Desenvolvido por Start by Alura. Projeto fictício sem fins comerciais.</p>
-    </footer>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/scrollReveal.js/4.0.9/scrollreveal.js"></script>
-    <script src="script.js"></script>
-  
+    // Acessibilidade do CTA: permite Enter/Espaço e rola até a seção
+    const cta = document.getElementById('btn-cta');
+    cta.addEventListener('click', (e) => {
+      const target = document.querySelector(cta.dataset.skipTo);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    cta.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        cta.click();
+      }
+    });
+
+    // Dados de exemplo para os cards de jogos (edite aqui!)
+    const jogos = [
+      {
+        titulo: 'The Legend of Zelda (exemplo)',
+        plataforma: ['Switch'],
+        status: 'Em alta',
+        descricao: 'Aventura e exploração com foco em mundo aberto. Substitua por um jogo atual de sua preferência.'
+      },
+      {
+        titulo: 'Baldur\'s Gate 3 (exemplo)',
+        plataforma: ['PC', 'PS5', 'Xbox'],
+        status: 'RPG premiado',
+        descricao: 'RPG por turnos com narrativa profunda. Edite para incluir um jogo mais atual quando desejar.'
+      },
+      {
+        titulo: 'Fortnite (exemplo)',
+        plataforma: ['Multiplataforma'],
+        status: 'Competitivo',
+        descricao: 'Battle Royale em constante atualização. Troque pelo jogo do momento.'
+      }
+    ];
+
+    const gamesList = document.getElementById('games-container');
+
+    const buildCard = (game) => {
+      const li = document.createElement('article');
+      li.className = 'card';
+      li.setAttribute('role', 'listitem');
+      li.innerHTML = `
+        <span class="badge" aria-label="status do jogo">${game.status}</span>
+        <h3 style="margin:.25rem 0 .25rem">${game.titulo}</h3>
+        <p style="margin:0;color:var(--muted)">Plataforma: ${game.plataforma.join(', ')}</p>
+        <p style="margin:.5rem 0 0">${game.descricao}</p>
+        <div aria-label="categorias" style="margin-top:.5rem">
+          ${(game.tags || ['popular','destaque']).map(t => `<span class='tag'>${t}</span>`).join('')}
+        </div>
+      `;
+      return li;
+    };
+
+    jogos.forEach(j => gamesList.appendChild(buildCard(j)));
+  </script>
 </body>
-
 </html>
